@@ -1,0 +1,155 @@
+@import"https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap";
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Montserrat",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+.container {
+    max-width: 1240px;
+    margin: auto;
+    padding: 10px;
+    margin-top: 150px;
+}
+.video-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.controls {
+    position: absolute;
+    bottom: 10px;
+    display: flex;
+    gap: 10px;
+    width: 98%;
+    justify-content: space-between;
+    z-index: 5;
+    left: 50%;
+    transform: translate(-50%);
+}
+.controls > * {
+    user-select: none;
+}
+.sides {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.media-button {
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+.time-line {
+    position: absolute;
+    width: 100%;
+    bottom:  30px;
+    left: 50%;
+    transform: translate(-50%);
+    z-index: 5;
+    margin: 0;
+}
+.media-bottom {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(#0000,#000000bf);
+}
+video {
+    display: block;
+}
+#current-time {
+    color: white;
+}
+.time-line input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+}
+p {
+    font-size: small;
+}
+#progress-bar{
+    height: 5px;
+    margin-bottom: 10px;
+    opacity: 0;
+    z-index: 999999;
+    cursor: pointer;
+}
+
+@media screen and (min-width: 1240px) {
+    #progress-bar:hover + .progress-loaded::after {
+        content: '';
+        width: 10px;
+        height: 10px;
+        border-radius: 100%;
+        background-color: #00b2ff;
+        position: absolute;
+        right: -2px;
+        top: -3px;
+    } 
+     
+}
+
+.progress-loaded {
+    position: absolute;
+    width: 0%;
+    bottom:  30px;
+    height: 3px;
+    margin-bottom: 10px;
+    background-color: #00b2ff;
+    z-index: 10;
+
+}
+
+.progress-preview{
+    position: absolute;
+    width: 100%;
+    bottom:  30px;
+    height: 3px;
+    margin-bottom: 10px;
+    background-color: #c4c4c46b;
+}
+.progress {
+    width: 98%;
+    margin: auto;
+    position: absolute;
+    bottom: 0;
+}
+
+#volume {
+    z-index: 999;
+    opacity: 0;
+}
+
+.volume-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#play {
+    width: 15px;
+    height: 20px;
+}
+
+
+#mute-button {
+    width: 25px;
+    height: 20px;
+}
+.progress-volume-preview {
+    position: absolute;
+    width: 129px;
+    height: 3px;
+    background-color: #c4c4c46b;
+    left: 61px;
+}
+
+.progress-volume-loaded {
+    width: 100%;
+    height: 4px;
+    background-color: #00b2ff;
+}

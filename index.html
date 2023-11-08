@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video API</title>
+    <link rel="stylesheet" href="/public/css/style.css">
+    <script src="/public/js/script.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <div class="container">
+    <div class="video-container">
+        <video src="public/video/5-1080.mp4" width="100%" height="100%" id="video"></video>
+        <div class="progress">
+            <input type="range" min="0" max="100" step="0.1" value="0" id="progress-bar" class="time-line">
+            <div class="progress-loaded" id="divProgress"></div>
+            <div class="progress-preview"></div>
+        </div>
+        <div class="controls">
+            <div class="sides">
+                <i class="fa-solid fa-play media-button" id="play"></i>
+                <div class="volume-container">
+                    <i class="fa-solid fa-volume-high media-button" id="mute-button"></i>
+                    <input type="range" min="0" max="1" step="any" value="1" id="volume">
+                    <div class="progress-volume-preview">
+                        <div class="progress-volume-loaded"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="sides">
+                <div class="" id="current-time"></div>
+                <i class="fa-solid fa-expand media-button" id="fullscreen"></i>
+            </div>
+        </div>
+        <div class="media-bottom"></div>
+       </div>
+  </div>
+</body>
+</html>
