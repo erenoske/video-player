@@ -13,8 +13,22 @@ const container = document.querySelector('.video-container');
 const muteButton = document.getElementById('mute-button');
 const volumeSlider = document.getElementById('volume');
 const previewVolume = document.querySelector('.progress-volume-loaded');
-const throttledSetProgress = throttle(setProgress, 300); 
+const throttledSetProgress = throttle(setProgress, 500); 
+const loader = document.querySelector('.lds-dual-ring');
+const loaderSecond = document.getElementById('loader-second');
+const mobilPlayButton = document.getElementById('mobil-play-button');
 let progressTimeout;
+let playTimeout;
+
+
+function showLoader() {
+    loader.classList.remove('hidden');
+}
+
+function hideLoader() {
+    loader.classList.add('hidden');
+    document.querySelector('.skeleton-active').classList.remove('skeleton-active');
+}
 
 function hideControl() {
     divProgress.style.display = 'none';
@@ -43,6 +57,7 @@ function playPause() {
         video.play();
         play.classList.remove(...play.classList);
         play.classList.add('fa-sharp', 'fa-solid', 'fa-pause', 'media-button');
+        mobilPlayButton.style.display = 'none';
         clearTimeout(progressTimeout);
         progressTimeout = setTimeout(() => { hideControl() }, 5000); 
     } else {
@@ -100,13 +115,15 @@ function throttle(func, delay) {
   
 
 function setProgress() {
-     video.pause();
-     video.play();
+    video.pause();
+    play.classList.remove(...play.classList);
+    play.classList.add('fa-play', 'fa-solid', 'media-button');
+    showControl();
     video.currentTime = (+progressBar.value * video.duration) / 100;
+    
     clearTimeout(progressTimeout);
     progressTimeout = setTimeout(() => { hideControl() }, 5000);
 }
-   
 
 function fullscrenn () {
    if(document.fullscreenElement == null) {
@@ -135,6 +152,15 @@ function toggleMute() {
     video.muted = !video.muted;
 }
 
+function toggleProgressBar() {
+    const startTime = (progressBar.value / 100) * video.duration;
+    video.currentTime = startTime; 
+    video.play()
+    play.classList.remove(...play.classList);
+    play.classList.add('fa-sharp', 'fa-solid', 'fa-pause', 'media-button');
+    clearTimeout(progressTimeout);
+    progressTimeout = setTimeout(() => { hideControl() }, 5000); 
+}
 
 video.addEventListener('volumechange', () => {
    volumeSlider.value = video.volume;
@@ -177,6 +203,7 @@ document.addEventListener('keydown', e => {
             break
         case "arrowleft":
             skip(-5);
+            showControl();
             break
         case "arrowright":
             skip(5);
@@ -187,12 +214,47 @@ document.addEventListener('keydown', e => {
 
 play.addEventListener('click', playPause);
 video.addEventListener('timeupdate', updateProgress);
-progressBar.addEventListener('input', throttledSetProgress);
-video.addEventListener('click', playPause);
+progressBar.addEventListener('input', () => {
+    throttledSetProgress();
+    divProgress.style.width = `${progressBar.value}%`;
+});
+if (!(/Mobil/i.test(navigator.userAgent))) {
+    video.addEventListener('click', playPause);
+  } else {
+    video.addEventListener('playing', function() {
+        mobilPlayButton.style.display = 'none'; 
+      });
+      
+    video.addEventListener('pause', function() {
+        mobilPlayButton.style.display = 'block'; 
+      });
+    video.addEventListener('click', playPause);
+  }
+mobilPlayButton.addEventListener('click', playPause);
 video.addEventListener('mousemove', showControl);
 fullscreenButton.addEventListener('click', fullscrenn);
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(updateProgress, 150)
-});
-
+document.addEventListener('DOMContentLoaded', showLoader);
+window.onload = function() {
+    video.load(); 
+  
+    video.addEventListener('loadedmetadata', function() {
+        updateProgress();
+        hideLoader();
+        container.style.display = 'flex'; 
+    });
+};
 document.addEventListener('fullscreenchange', changeScreen);
+progressBar.addEventListener('mouseup', toggleProgressBar);
+
+progressBar.addEventListener('touchend', toggleProgressBar);
+
+video.addEventListener('seeking', function() {
+    loaderSecond.style.display = 'block'; 
+    mobilPlayButton.style.display = 'none'; 
+  });
+  
+  video.addEventListener('seeked', function() {
+    loaderSecond.style.display = 'none'; 
+  });
+
+

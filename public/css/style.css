@@ -16,7 +16,7 @@
 }
 .video-container {
     position: relative;
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
 }
@@ -80,20 +80,38 @@ p {
     cursor: pointer;
 }
 
-@media screen and (min-width: 1240px) {
-    #progress-bar:hover + .progress-loaded::after {
-        content: '';
-        width: 10px;
-        height: 10px;
-        border-radius: 100%;
-        background-color: #00b2ff;
-        position: absolute;
-        right: -2px;
-        top: -3px;
+
+#progress-bar + .progress-loaded::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    background-color: #00b2ff;
+    position: absolute;
+    right: -3px;
+    top: -3px;
+} 
+
+
+@media only screen and (max-width: 600px) {
+    #progress-bar + .progress-loaded::after  {
+        width: 7px;
+        height: 7px;
+        top: -2px;
     } 
-     
 }
 
+.progress-volume-loaded::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    background-color: #00b2ff;
+    position: absolute;
+    right: -2px;
+    top: -3px;
+} 
+     
 .progress-loaded {
     position: absolute;
     width: 0%;
@@ -130,6 +148,14 @@ p {
     align-items: center;
     gap: 10px;
 }
+@media only screen and (max-width: 600px) {
+    .progress-volume-preview {
+        display: none;
+    }
+    #volume {
+        display: none;
+    }
+}
 #play {
     width: 15px;
     height: 20px;
@@ -142,14 +168,69 @@ p {
 }
 .progress-volume-preview {
     position: absolute;
-    width: 129px;
+    width: 122px;
     height: 3px;
     background-color: #c4c4c46b;
-    left: 61px;
+    left: 69px;
+    cursor: pointer;
 }
 
 .progress-volume-loaded {
     width: 100%;
     height: 4px;
     background-color: #00b2ff;
+    position: relative;
+}
+
+.lds-dual-ring {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 99999;
+}
+
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid #00b2ff;
+  border-color: #00b2ff transparent #00b2ff transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.hidden {
+    display: none;
+}
+.skeleton-active{
+    position: relative;
+    width: 100%;
+    padding-top: calc(9/16*100%);
+}
+.video-play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 99999;
+    font-size: 50px;
+    color: white;
+    padding: 7px 10px 8px 16px;
+    border-radius: 100%;
+    background-color: #c4c4c46b;
+    
 }
