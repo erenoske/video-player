@@ -3,9 +3,9 @@ const play = document.getElementById('play');
 const pause = document.getElementById('pause');
 const stop = document.getElementById('stop');
 const currentTime = document.getElementById('current-time');
-const progressBar = document.getElementById('progress-bar');
 const divProgress = document.getElementById('divProgress');
 const divProgressPreview = document.querySelector('.progress-preview');
+const divProgressFull = document.querySelector('.progress-full');
 const bottom = document.querySelector('.media-bottom');
 const controls = document.querySelector('.controls');
 const fullscreenButton = document.getElementById('fullscreen');
@@ -13,12 +13,12 @@ const container = document.querySelector('.video-container');
 const muteButton = document.getElementById('mute-button');
 const volumeSlider = document.getElementById('volume');
 const previewVolume = document.querySelector('.progress-volume-loaded');
-const throttledSetProgress = throttle(setProgress, 500); 
 const loader = document.querySelector('.lds-dual-ring');
 const loaderSecond = document.getElementById('loader-second');
 const mobilPlayButton = document.getElementById('mobil-play-button');
 let progressTimeout;
 let playTimeout;
+
 
 
 function showLoader() {
@@ -100,30 +100,8 @@ function updateProgress() {
 }
 
 
-function throttle(func, delay) {
-    let canRun = true;
-    return function(...args) {
-      if (canRun) {
-        func(...args);
-        canRun = false;
-        setTimeout(() => {
-          canRun = true;
-        }, delay);
-      }
-    };
-  }
-  
 
-function setProgress() {
-    video.pause();
-    play.classList.remove(...play.classList);
-    play.classList.add('fa-play', 'fa-solid', 'media-button');
-    showControl();
-    video.currentTime = (+progressBar.value * video.duration) / 100;
-    
-    clearTimeout(progressTimeout);
-    progressTimeout = setTimeout(() => { hideControl() }, 5000);
-}
+  
 
 function fullscrenn () {
    if(document.fullscreenElement == null) {
@@ -153,13 +131,7 @@ function toggleMute() {
 }
 
 function toggleProgressBar() {
-    const startTime = (progressBar.value / 100) * video.duration;
-    video.currentTime = startTime; 
-    video.play()
-    play.classList.remove(...play.classList);
-    play.classList.add('fa-sharp', 'fa-solid', 'fa-pause', 'media-button');
-    clearTimeout(progressTimeout);
-    progressTimeout = setTimeout(() => { hideControl() }, 5000); 
+
 }
 
 video.addEventListener('volumechange', () => {
@@ -214,22 +186,7 @@ document.addEventListener('keydown', e => {
 
 play.addEventListener('click', playPause);
 video.addEventListener('timeupdate', updateProgress);
-progressBar.addEventListener('input', () => {
-    throttledSetProgress();
-    divProgress.style.width = `${progressBar.value}%`;
-});
-if (!(/Mobil/i.test(navigator.userAgent))) {
-    video.addEventListener('click', playPause);
-  } else {
-    video.addEventListener('playing', function() {
-        mobilPlayButton.style.display = 'none'; 
-      });
-      
-    video.addEventListener('pause', function() {
-        mobilPlayButton.style.display = 'block'; 
-      });
-    video.addEventListener('click', playPause);
-  }
+video.addEventListener('click', playPause);
 mobilPlayButton.addEventListener('click', playPause);
 video.addEventListener('mousemove', showControl);
 fullscreenButton.addEventListener('click', fullscrenn);
@@ -244,9 +201,38 @@ window.onload = function() {
     });
 };
 document.addEventListener('fullscreenchange', changeScreen);
-progressBar.addEventListener('mouseup', toggleProgressBar);
 
-progressBar.addEventListener('touchend', toggleProgressBar);
+
+divProgressFull.addEventListener('mouseup', (event) => {
+    const rect = divProgressFull.getBoundingClientRect();
+    const offsetX = event.clientX - rect.left;
+    const percentage = (offsetX / rect.width) * 100;
+    video.play();
+    play.classList.remove(...play.classList);
+    play.classList.add('fa-sharp', 'fa-solid', 'fa-pause', 'media-button');
+    mobilPlayButton.style.display = 'none';
+    video.currentTime = (percentage * video.duration) / 100;
+    clearTimeout(progressTimeout);
+    progressTimeout = setTimeout(() => { hideControl() }, 5000);
+    
+});
+
+divProgressFull.addEventListener('touchend', function(event) {
+  const touch = event.changedTouches[0];
+  const rect = divProgressFull.getBoundingClientRect();
+  const offsetX = touch.clientX - rect.left;
+  const percentage = Math.max(0, Math.min(100, (offsetX / rect.width) * 100));
+  video.play();
+  play.classList.remove(...play.classList);
+  play.classList.add('fa-sharp', 'fa-solid', 'fa-pause', 'media-button');
+  mobilPlayButton.style.display = 'none';
+  video.currentTime = (percentage * video.duration) / 100;
+  clearTimeout(progressTimeout);
+  progressTimeout = setTimeout(() => { hideControl() }, 5000);
+
+  event.preventDefault(); 
+});
+
 
 video.addEventListener('seeking', function() {
     loaderSecond.style.display = 'block'; 
@@ -256,5 +242,96 @@ video.addEventListener('seeking', function() {
   video.addEventListener('seeked', function() {
     loaderSecond.style.display = 'none'; 
   });
+
+
+
+
+
+
+let isDragging = false;
+
+divProgressFull.addEventListener('mousedown', function(event) {
+  isDragging = true;
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+});
+
+
+const throttledSetProgress = throttle(setProgress, 500); 
+
+function throttle(func, delay) {
+    let canRun = true;
+    return function(...args) {
+      if (canRun) {
+        func(...args);
+        canRun = false;
+        setTimeout(() => {
+          canRun = true;
+        }, delay);
+      }
+    };
+  }
+
+function setProgress(percentage) {
+    video.pause();
+    play.classList.remove(...play.classList);
+    play.classList.add('fa-play', 'fa-solid', 'media-button');
+    showControl();
+    video.currentTime = (percentage * video.duration) / 100;
+    
+    clearTimeout(progressTimeout);
+    progressTimeout = setTimeout(() => { hideControl() }, 5000);
+}
+
+function onMouseMove(event) {
+  if (isDragging) {
+    //1. kısım
+    const rect = divProgressFull.getBoundingClientRect();
+    const offsetX = event.clientX - rect.left;
+    const percentage = (offsetX / rect.width) * 100;
+    divProgress.style.width = percentage + '%';
+    //2.kısım
+    throttledSetProgress(percentage);
+  }
+}
+
+function onMouseUp() {
+  isDragging = false;
+
+  document.removeEventListener('mousemove', onMouseMove);
+  document.removeEventListener('mouseup', onMouseUp);
+}
+
+
+divProgressFull.addEventListener('touchstart', function(event) {
+  isDragging = true;
+
+  const touch = event.touches[0];
+  const offsetX = touch.clientX - divProgressFull.getBoundingClientRect().left;
+
+  document.addEventListener('touchmove', onTouchMove);
+  document.addEventListener('touchend', onTouchEnd);
+
+  function onTouchMove(event) {
+    if (isDragging) {
+      const touch = event.touches[0];
+      const newOffsetX = touch.clientX - divProgressFull.getBoundingClientRect().left;
+      const rectWidth = divProgressFull.getBoundingClientRect().width;
+      const percentage = Math.max(0, Math.min(100, (newOffsetX / rectWidth) * 100));
+      divProgress.style.width = percentage + '%';
+      throttledSetProgress(percentage);
+    }
+  }
+
+  function onTouchEnd() {
+    isDragging = false;
+
+    document.removeEventListener('touchmove', onTouchMove);
+    document.removeEventListener('touchend', onTouchEnd);
+  }
+
+  event.preventDefault(); // Sayfa kaydırma hareketini engellemek için
+});
 
 

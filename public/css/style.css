@@ -74,50 +74,52 @@ p {
 }
 #progress-bar{
     height: 5px;
-    margin-bottom: 10px;
     opacity: 0;
     z-index: 999999;
     cursor: pointer;
 }
 
 
-#progress-bar + .progress-loaded::after {
+.progress-full + .progress-loaded::after {
     content: '';
     width: 10px;
     height: 10px;
-    border-radius: 100%;
+    border-radius: 50%;
     background-color: #00b2ff;
     position: absolute;
     right: -3px;
     top: -3px;
-} 
-
-
-@media only screen and (max-width: 600px) {
-    #progress-bar + .progress-loaded::after  {
-        width: 7px;
-        height: 7px;
-        top: -2px;
-    } 
+    transform: scale(0); 
+    transition: transform 0.3s ease; 
 }
 
-.progress-volume-loaded::after {
+.progress-full:hover + .progress-loaded::after {
+    transform: scale(1); 
+}
+
+#volume:hover + .progress-volume-preview > .progress-volume-loaded::after {
     content: '';
     width: 10px;
     height: 10px;
-    border-radius: 100%;
+    border-radius: 50%;
     background-color: #00b2ff;
     position: absolute;
-    right: -2px;
+    right: -3px;
     top: -3px;
-} 
-     
+    transform: scale(0); 
+    transition: transform 03s ease; 
+}
+
+#volume:hover + .progress-volume-preview > .progress-volume-loaded::after {
+    transform: scale(1); 
+}
+
+    
 .progress-loaded {
     position: absolute;
     width: 0%;
     bottom:  30px;
     height: 3px;
-    margin-bottom: 10px;
     background-color: #00b2ff;
     z-index: 10;
 
@@ -128,8 +130,15 @@ p {
     width: 100%;
     bottom:  30px;
     height: 3px;
-    margin-bottom: 10px;
     background-color: #c4c4c46b;
+}
+.progress-full{
+    position: absolute;
+    width: 100%;
+    bottom: 20px;
+    height: 20px;
+    z-index: 999999;
+    cursor: pointer;
 }
 .progress {
     width: 98%;
