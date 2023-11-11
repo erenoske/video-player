@@ -1,43 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video API</title>
-    <link rel="stylesheet" href="/public/css/style.css">
-    <script src="/public/js/script.js" defer></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-</head>
-<body>
-  <div class="container">
-   <div class="skeleton-active">
-    <div class="lds-dual-ring hidden"></div>
-    <div class="video-container">
-        <div class="lds-dual-ring hidden" id="loader-second"></div>
-        <i class="fa-solid fa-play video-play-button hidden" id="mobil-play-button"></i>
-        <video src="public/video/1-360.mp4" width="100%" height="100%" id="video" autoplay></video>
-        <div class="controls">
-            <div class="progress-full"></div>
-            <div class="progress-loaded" id="divProgress"></div>
-            <div class="progress-preview"></div>
-            <div class="sides">
-                <i class="fa-solid fa-play media-button" id="play"></i>
-                <div class="volume-container">
-                    <i class="fa-solid fa-volume-high media-button" id="mute-button"></i>
-                    <input type="range" min="0" max="1" step="any" value="1" id="volume">
-                    <div class="progress-volume-preview">
-                        <div class="progress-volume-loaded"></div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Video API</title>
+        <link rel="stylesheet" href="/public/css/style.css" />
+        <script src="/public/js/script.js" defer></script>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+            integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
+    </head>
+    <body>
+        <div class="container">
+            <div class="skeleton-active">
+                <div class="lds-dual-ring hidden"></div>
+                <div class="video-container">
+                    <div class="lds-dual-ring hidden" id="loader-second"></div>
+                    <i class="fa-solid fa-play video-play-button hidden" id="mobil-play-button" style="display: none;"></i>
+                    <video src="public/video/1-1080.mp4" width="100%" height="100%" id="video"></video>
+                    <div class="controls">
+                        <div class="progress-full"></div>
+                        <div class="progress-loaded" id="divProgress"></div>
+                        <div class="progress-preview"></div>
+                        <div class="sides">
+                            <i class="fa-solid fa-play media-button" id="play"></i>
+                            <div class="volume-container">
+                                <i class="fa-solid fa-volume-high media-button" id="mute-button"></i>
+                                <input type="range" min="0" max="1" step="any" value="1" id="volume" />
+                                <div class="progress-volume-preview">
+                                    <div class="progress-volume-loaded"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sides">
+                            <div class="" id="current-time"></div>
+                            <i class="fa-solid fa-gear media-button" id="settings"></i>
+                            <div class="settings-box hidden" id="settings-box">
+                                <div class="settings-header">
+                                    <h5 class="settings-h">Kalite</h5>
+                                </div>
+                                <div class="settings-items">
+                                    <div class="settings-item size-active" data-size="1080">
+                                        <p>1080</p>
+                                    </div>
+                                    <div class="settings-item" data-size="360">
+                                        <p>360</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-expand media-button" id="fullscreen"></i>
+                        </div>
                     </div>
+                    <div class="media-bottom"></div>
                 </div>
             </div>
-            <div class="sides">
-                <div class="" id="current-time"></div>
-                <i class="fa-solid fa-expand media-button" id="fullscreen"></i>
-            </div>
         </div>
-        <div class="media-bottom"></div>
-       </div>
-  </div>
-   </div>
-</body>
+    </body>
+    <script>
+    const config = {
+        path : 'public/video/',
+        pathNames: ['1-1080.mp4', '1-360.mp4'],
+      }
+    </script>
 </html>

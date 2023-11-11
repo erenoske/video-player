@@ -1,3 +1,6 @@
+const global = {
+  adjusting: false
+}
 const video = document.getElementById('video');
 const play = document.getElementById('play');
 const pause = document.getElementById('pause');
@@ -16,10 +19,56 @@ const previewVolume = document.querySelector('.progress-volume-loaded');
 const loader = document.querySelector('.lds-dual-ring');
 const loaderSecond = document.getElementById('loader-second');
 const mobilPlayButton = document.getElementById('mobil-play-button');
+const settings = document.getElementById('settings');
+const settingsBox = document.getElementById('settings-box');
 let progressTimeout;
 let playTimeout;
 
 
+const dataSizes = document.querySelectorAll('.settings-item');
+dataSizes.forEach(item => {
+  item.addEventListener('click', () => {
+    const videoTime = video.currentTime;
+    dataSizes.forEach(item => {
+      item.classList.remove('size-active');
+    });
+    sizeItemClick(item, videoTime); 
+  });
+});
+
+
+function sizeItemClick(element, videoTime) {
+  const dataSize = element.getAttribute('data-size');
+  if(dataSize === '360') {
+    video.src = config.path + config.pathNames[1];
+    element.classList.add('size-active');
+    video.play();
+    video.currentTime = videoTime; 
+  }
+  if(dataSize === '1080') {
+    video.src = config.path + config.pathNames[0];
+    element.classList.add('size-active');
+    video.play();
+    video.currentTime = videoTime; 
+  }
+}
+
+function settingsToggle()  {
+  settingsBox.classList.toggle('hidden');
+  settings.classList.toggle('rotated');
+  if(global.adjusting === true) {
+    global.adjusting = false;
+  } else {
+    global.adjusting = true;
+  }
+}
+
+function settingsRemove() {
+      settingsBox.classList.add('hidden');
+      global.adjusting = false;
+}
+
+settings.addEventListener('click', settingsToggle);
 
 function showLoader() {
     loader.classList.remove('hidden');
@@ -27,7 +76,9 @@ function showLoader() {
 
 function hideLoader() {
     loader.classList.add('hidden');
-    document.querySelector('.skeleton-active').classList.remove('skeleton-active');
+    if(document.querySelector('.skeleton-active')) {
+      document.querySelector('.skeleton-active').classList.remove('skeleton-active');
+    }
 }
 
 function hideControl() {
@@ -38,6 +89,7 @@ function hideControl() {
     if(!(document.fullscreenElement == null)) {
         document.body.style.cursor = 'none';
     } 
+    settingsRemove();
 }
 
 function showControl() {
@@ -69,8 +121,9 @@ function playPause() {
 }
 
 function updateProgress() {
-    divProgress.style.width = `${(video.currentTime / video.duration) * 100}%`;
-
+    if(!(isDragging)) {
+      divProgress.style.width = `${(video.currentTime / video.duration) * 100}%`;
+    }
 
     //Get minites
     let minutes = Math.floor(video.currentTime / 60);
@@ -99,10 +152,6 @@ function updateProgress() {
     currentTime.innerHTML = `<p>${minutes}:${seconds} / ${minutesDuration}:${secondsDuration}</p>`;
 }
 
-
-
-  
-
 function fullscrenn () {
    if(document.fullscreenElement == null) {
      container.requestFullscreen();
@@ -113,7 +162,7 @@ function fullscrenn () {
 
 function skip(duration) {
     video.currentTime += duration
-  }
+}
   
 
 function changeScreen () {
@@ -209,14 +258,15 @@ divProgressFull.addEventListener('mouseup', (event) => {
     const offsetX = event.clientX - rect.left;
     const percentage = (offsetX / rect.width) * 100;
     video.play();
+    divProgress.style.width = percentage + '%';
     play.classList.remove(...play.classList);
     play.classList.add('fa-sharp', 'fa-solid', 'fa-pause', 'media-button');
     mobilPlayButton.style.display = 'none';
     video.currentTime = (percentage * video.duration) / 100;
     clearTimeout(progressTimeout);
     progressTimeout = setTimeout(() => { hideControl() }, 5000);
-    
 });
+
 
 divProgressFull.addEventListener('touchend', function(event) {
   const touch = event.changedTouches[0];
@@ -224,6 +274,7 @@ divProgressFull.addEventListener('touchend', function(event) {
   const offsetX = touch.clientX - rect.left;
   const percentage = Math.max(0, Math.min(100, (offsetX / rect.width) * 100));
   video.play();
+  divProgress.style.width = percentage + '%';
   play.classList.remove(...play.classList);
   play.classList.add('fa-sharp', 'fa-solid', 'fa-pause', 'media-button');
   mobilPlayButton.style.display = 'none';
@@ -240,14 +291,20 @@ video.addEventListener('seeking', function() {
     mobilPlayButton.style.display = 'none'; 
   });
   
-  video.addEventListener('seeked', function() {
-    loaderSecond.style.display = 'none'; 
-  });
+video.addEventListener('seeked', function() {
+  loaderSecond.style.display = 'none'; 
+});
+video.addEventListener('waiting', function() {
+  loaderSecond.style.display = 'block';
+});
 
-
-
-
-
+video.addEventListener('playing', function() {
+  loaderSecond.style.display = 'none';
+  play.classList.remove(...play.classList);
+  play.classList.add('fa-sharp', 'fa-solid', 'fa-pause', 'media-button');
+  settingsRemove();
+});
+  
 
 let isDragging = false;
 
@@ -291,6 +348,7 @@ function onMouseMove(event) {
     const rect = divProgressFull.getBoundingClientRect();
     const offsetX = event.clientX - rect.left;
     let percentage = (offsetX / rect.width) * 100;
+    const videoCurrentTime = (percentage * video.duration) / 100;
     if(percentage > 100)  {
       percentage = 100;
     } 
@@ -298,7 +356,33 @@ function onMouseMove(event) {
       percentage = 0;
     }
     divProgress.style.width = percentage + '%';
+    
+    //Get minites
+    let minutes = Math.floor(videoCurrentTime / 60);
+    if (minutes < 10) {
+        minutes = '0' + String(minutes);
+    }
+  
+    let seconds = Math.floor(videoCurrentTime % 60);
+    if(seconds < 10) {
+        seconds = '0' + String(seconds);
+    }
+  
 
+    let minutesDuration = Math.floor(video.duration / 60);
+    if (minutesDuration < 10) {
+        minutesDuration = '0' + String(minutes);
+    }
+  
+    let secondsDuration = Math.floor(video.duration % 60);
+    if(secondsDuration < 10) {
+        secondsDuration = '0' + String(seconds);
+    }
+  
+    
+  
+    currentTime.innerHTML = `<p>${minutes}:${seconds} / ${minutesDuration}:${secondsDuration}</p>`;
+    
     //2.kısım
     throttledSetProgress(percentage);
   }
@@ -342,4 +426,13 @@ divProgressFull.addEventListener('touchstart', function(event) {
   event.preventDefault(); 
 });
 
+function controlCheck () {
+   if(video.paused) {
+    showControl();
+   }
+   if(global.adjusting === true) {
+    showControl();
+   }
+}
 
+setInterval(controlCheck, 3000);

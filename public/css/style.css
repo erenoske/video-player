@@ -19,6 +19,7 @@
     display: none;
     justify-content: center;
     align-items: center;
+    background-color: black;
 }
 .controls {
     position: absolute;
@@ -151,6 +152,7 @@ p {
     z-index: 999;
     opacity: 0;
     cursor: pointer;
+    margin-left: 15px;
 }
 
 .volume-container {
@@ -173,7 +175,7 @@ p {
 
 
 #mute-button {
-    width: 25px;
+    width: 10px;
     height: 20px;
 }
 .progress-volume-preview {
@@ -230,6 +232,7 @@ p {
     position: relative;
     width: 100%;
     padding-top: calc(9/16*100%);
+    background-color: #c4c4c46b;
 }
 .video-play-button {
     position: absolute;
@@ -243,4 +246,57 @@ p {
     border-radius: 100%;
     background-color: #c4c4c46b;
     
+}
+.settings-box {
+    width: 100px;
+    position: absolute;
+    background-color: #ffffffe6;
+    bottom: 38px;
+    right: 0;
+    border-radius: 4px;
+    padding: 5px;
+}
+.settings-header {
+    color: #000000bf;
+    padding-bottom: 5px;
+    text-align: center;
+    border-bottom: 1px solid #c4c4c46b;
+}
+.settings-items {
+    padding: 5px 0 5px 0;
+    display: grid;
+    gap: 10px;
+    text-align: center;
+}
+.settings-item {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 5px 10px 5px 10px;
+    border-radius: 4px;
+    flex-direction: flex-end;
+}
+.settings-item:hover {
+    background-color: #c4c4c46b;
+}
+
+#settings{
+    transition: transform 0.5s ease; 
+}
+
+.rotated {
+    transform: rotate(45deg); 
+}
+.settings-item {
+    position: relative;
+}
+.size-active::after {
+    content: '';
+    position: absolute;
+    right: 10px;
+    display: block;
+    border-radius: 100%;
+    border: 4px solid #00b2ff;
+    width: 16px;
+    height: 16px;
 }
