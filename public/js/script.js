@@ -149,6 +149,7 @@ video.addEventListener('volumechange', () => {
    video.volume;
    video.muted;
    previewVolume.style.width = `${video.volume * 100}%`;
+   showControl();
 });
 
 muteButton.addEventListener('click', toggleMute);
@@ -289,8 +290,15 @@ function onMouseMove(event) {
     //1. kısım
     const rect = divProgressFull.getBoundingClientRect();
     const offsetX = event.clientX - rect.left;
-    const percentage = (offsetX / rect.width) * 100;
+    let percentage = (offsetX / rect.width) * 100;
+    if(percentage > 100)  {
+      percentage = 100;
+    } 
+    if(percentage < 0) {
+      percentage = 0;
+    }
     divProgress.style.width = percentage + '%';
+
     //2.kısım
     throttledSetProgress(percentage);
   }
@@ -331,7 +339,7 @@ divProgressFull.addEventListener('touchstart', function(event) {
     document.removeEventListener('touchend', onTouchEnd);
   }
 
-  event.preventDefault(); // Sayfa kaydırma hareketini engellemek için
+  event.preventDefault(); 
 });
 
 
