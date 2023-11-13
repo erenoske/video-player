@@ -39,7 +39,31 @@ dataSizes.forEach(item => {
 
 function sizeItemClick(element, videoTime) {
   const dataSize = element.getAttribute('data-size');
+  if(dataSize === '144') {
+    video.src = config.path + config.pathNames[5];
+    element.classList.add('size-active');
+    video.play();
+    video.currentTime = videoTime; 
+  }
+  if(dataSize === '240') {
+    video.src = config.path + config.pathNames[4];
+    element.classList.add('size-active');
+    video.play();
+    video.currentTime = videoTime; 
+  }
   if(dataSize === '360') {
+    video.src = config.path + config.pathNames[3];
+    element.classList.add('size-active');
+    video.play();
+    video.currentTime = videoTime; 
+  }
+  if(dataSize === '480') {
+    video.src = config.path + config.pathNames[2];
+    element.classList.add('size-active');
+    video.play();
+    video.currentTime = videoTime; 
+  }
+  if(dataSize === '720') {
     video.src = config.path + config.pathNames[1];
     element.classList.add('size-active');
     video.play();
@@ -169,9 +193,11 @@ function changeScreen () {
     if(document.fullscreenElement == null) {
         fullscreenButton.classList.remove(...fullscreenButton.classList);
         fullscreenButton.classList.add( 'fa-solid', 'fa-expand', 'media-button');
+        document.body.style.cursor = 'auto';
       } else {
         fullscreenButton.classList.remove(...fullscreenButton.classList);
         fullscreenButton.classList.add( 'fa-solid', 'fa-compress', 'media-button');
+        document.body.style.cursor = 'auto';
       }
 }
 
@@ -229,6 +255,7 @@ document.addEventListener('keydown', e => {
             break
         case "arrowright":
             skip(5);
+            showControl();
             break            
     }
 });
@@ -253,9 +280,9 @@ window.onload = function() {
 document.addEventListener('fullscreenchange', changeScreen);
 
 
-divProgressFull.addEventListener('mouseup', (event) => {
+divProgressFull.addEventListener('mouseup', e => {
     const rect = divProgressFull.getBoundingClientRect();
-    const offsetX = event.clientX - rect.left;
+    const offsetX = e.clientX - rect.left;
     const percentage = (offsetX / rect.width) * 100;
     video.play();
     divProgress.style.width = percentage + '%';
@@ -268,8 +295,8 @@ divProgressFull.addEventListener('mouseup', (event) => {
 });
 
 
-divProgressFull.addEventListener('touchend', function(event) {
-  const touch = event.changedTouches[0];
+divProgressFull.addEventListener('touchend', e => {
+  const touch = e.changedTouches[0];
   const rect = divProgressFull.getBoundingClientRect();
   const offsetX = touch.clientX - rect.left;
   const percentage = Math.max(0, Math.min(100, (offsetX / rect.width) * 100));
@@ -281,8 +308,6 @@ divProgressFull.addEventListener('touchend', function(event) {
   video.currentTime = (percentage * video.duration) / 100;
   clearTimeout(progressTimeout);
   progressTimeout = setTimeout(() => { hideControl() }, 5000);
-
-  event.preventDefault(); 
 });
 
 
@@ -422,8 +447,6 @@ divProgressFull.addEventListener('touchstart', function(event) {
     document.removeEventListener('touchmove', onTouchMove);
     document.removeEventListener('touchend', onTouchEnd);
   }
-
-  event.preventDefault(); 
 });
 
 function controlCheck () {
