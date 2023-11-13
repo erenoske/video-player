@@ -39,52 +39,28 @@ dataSizes.forEach(item => {
 
 function sizeItemClick(element, videoTime) {
   const dataSize = element.getAttribute('data-size');
-  if(dataSize === '144') {
-    video.src = config.path + config.pathNames[5];
-    element.classList.add('size-active');
-    video.play();
-    video.currentTime = videoTime; 
+  let videoPaused;
+  const sizes = {
+    '1080': 0,
+    '720': 1,
+    '480': 2,
+    '360': 3,
+    '240': 4,
+    '144': 5,
   }
-  if(dataSize === '240') {
-    video.src = config.path + config.pathNames[4];
-    element.classList.add('size-active');
-    video.play();
-    video.currentTime = videoTime; 
-  }
-  if(dataSize === '360') {
-    video.src = config.path + config.pathNames[3];
-    element.classList.add('size-active');
-    video.play();
-    video.currentTime = videoTime; 
-  }
-  if(dataSize === '480') {
-    video.src = config.path + config.pathNames[2];
-    element.classList.add('size-active');
-    video.play();
-    video.currentTime = videoTime; 
-  }
-  if(dataSize === '720') {
-    video.src = config.path + config.pathNames[1];
-    element.classList.add('size-active');
-    video.play();
-    video.currentTime = videoTime; 
-  }
-  if(dataSize === '1080') {
-    video.src = config.path + config.pathNames[0];
-    element.classList.add('size-active');
-    video.play();
-    video.currentTime = videoTime; 
-  }
-}
-
-function settingsToggle()  {
-  settingsBox.classList.toggle('hidden');
-  settings.classList.toggle('rotated');
-  if(global.adjusting === true) {
-    global.adjusting = false;
+  if(video.paused) {
+    videoPaused = true;
   } else {
-    global.adjusting = true;
+    videoPaused = false;
   }
+  video.src = config.path + config.pathNames[sizes[dataSize]];
+  element.classList.add('size-active');
+  if(videoPaused) {
+    video.pause();
+  } else {
+    video.play();
+  }
+  video.currentTime = videoTime; 
 }
 
 function settingsRemove() {
