@@ -61,6 +61,18 @@ function sizeItemClick(element, videoTime) {
     video.play();
   }
   video.currentTime = videoTime; 
+  settingsRemove();
+}
+
+
+function settingsToggle()  {
+  settingsBox.classList.toggle('hidden');
+  settings.classList.toggle('rotated');
+  if(global.adjusting === true) {
+    global.adjusting = false;
+  } else {
+    global.adjusting = true;
+  }
 }
 
 function settingsRemove() {
